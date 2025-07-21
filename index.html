@@ -1,0 +1,1742 @@
+<!-- Made on 19 - July - 2025 11Am - with developed using Gemini AI by @Nerdyintruder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian F&O Stocks by Sector</title>
+    <!-- Favicon - Place your favicon.ico in the root directory when hosting -->
+    <link rel="icon" href="favicon.ico">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* CSS Variables for Theme */
+        :root {
+            /* Light Theme Defaults */
+            --bg-primary: #f0f2f5;
+            --container-bg: #ffffff;
+            --text-primary: #333;
+            --border-color: #e2e8f0;
+            --active-green: #4CAF50; /* Material Green 500 */
+            --glow-color: rgba(76, 175, 80, 0.4);
+
+            /* Header Specific - Light Theme */
+            --header-border-gradient-start: #4361ee;
+            --header-border-gradient-mid: #3a0ca3;
+            --header-border-gradient-end: #7209b7;
+            --title-shadow-color: rgba(0, 0, 0, 0.1);
+            --logo-bg-color: rgba(255,255,255,0.05);
+            --gold-primary: #f59e0b; /* Amber 500 */
+            --gold-secondary: #d97706; /* Amber 700 */
+
+            /* Quote Container Specific - Light Theme */
+            --quote-gradient-start: #ffffff; /* White */
+            --quote-gradient-end: #e0e0e0; /* Light gray */
+            --quote-shadow-color: rgba(0, 0, 0, 0.2);
+            --quote-inset-shadow-color: rgba(0, 0, 0, 0.1);
+            --quote-author-color: #4299e1; /* Blue for author in light theme */
+
+            /* Widget Specific - Light Theme */
+            --widget-bg-light: #f7f7f7; /* Custom light for widgets */
+
+            /* General Accent for Links/Hover */
+            --accent: #4299e1; /* Blue */
+        }
+
+        body.dark {
+            /* Dark Theme Overrides */
+            --bg-primary: #1a202c;
+            --container-bg: #2d3748;
+            --text-primary: #e2e8f0; /* Changed to light for dark mode */
+            --border-color: #4a5568;
+            --active-green: #66BB6A; /* Material Green 400 */
+            --glow-color: rgba(102, 187, 106, 0.4);
+
+            /* Header Specific - Dark Theme */
+            --header-border-gradient-start: #4361ee;
+            --header-border-gradient-mid: #3a0ca3;
+            --header-border-gradient-end: #7209b7;
+            --title-shadow-color: rgba(255, 255, 255, 0.2);
+            --logo-bg-color: rgba(0,0,0,0.1);
+            --gold-primary: #fcd34d; /* Amber 300 */
+            --gold-secondary: #fbbf24; /* Amber 400 */
+
+            /* Quote Container Specific - Dark Theme */
+            --quote-gradient-start: #232a3a; /* Original dark start */
+            --quote-gradient-end: #1a202c; /* Original dark end */
+            --quote-shadow-color: rgba(0, 0, 0, 0.5);
+            --quote-inset-shadow-color: rgba(0, 0, 0, 0.4);
+            --quote-author-color: #fcd34d; /* Amber/Gold for author in dark theme */
+
+            /* Widget Specific - Dark Theme */
+            --widget-bg-light: #f7f7f7;
+
+            /* General Accent for Links/Hover */
+            --accent: #818cf8; /* Indigo */
+        }
+
+        /* Custom styles for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            background-color: var(--container-bg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        body.dark .main-container {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Adjust text colors to use variables for consistency */
+        /* Ensure these classes also use --text-primary for dark mode visibility */
+        .text-gray-800, .text-gray-700, .text-gray-600 {
+            color: var(--text-primary);
+        }
+        .bg-gray-100 { background-color: var(--border-color); } /* Use border color for light background elements */
+
+
+        .back-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            background-color: #4a5568; /* Fixed color for back button for contrast */
+            color: white;
+        }
+        .back-button:hover {
+            background-color: #6a768e;
+            transform: translateY(-2px);
+        }
+
+        /* Style for sector cards */
+        .sector-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .sector-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .sector-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .sector-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Ticker item glow on hover */
+        .ticker-item {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .ticker-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(66, 153, 225, 0.7); /* Blue glow */
+            z-index: 10; /* Bring hovered item to front */
+        }
+        body.dark .ticker-item:hover {
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.7); /* Indigo glow for dark theme */
+        }
+
+        /* TradingView chart container styling */
+        #tradingviewChartContainer {
+            position: absolute;
+            z-index: 100;
+            background-color: var(--container-bg); /* Uses theme variable */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+            display: none; /* Hidden by default */
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+            pointer-events: none; /* Allows clicks to pass through when hidden */
+        }
+        body.dark #tradingviewChartContainer {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+        #tradingviewChartContainer.visible {
+            display: block;
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto; /* Enable clicks when visible */
+        }
+
+        /* Scan Mode Button Styles */
+        .scan-mode-toggle {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            background: var(--container-bg); /* Uses container background color */
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--text-primary);
+            /* Add position relative to contain the options panel */
+            position: relative;
+        }
+
+        .scan-mode-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--glow-color);
+        }
+
+        .scan-mode-toggle.active {
+            background: linear-gradient(135deg, var(--active-green), #2E7D32); /* Darker green for active state */
+            color: white;
+        }
+
+        .scan-mode-toggle.active .scan-icon {
+            filter: brightness(1.5);
+        }
+
+        /* Scan Mode Options Container */
+        #scanModeOptions {
+            position: absolute; /* Position relative to the parent .scan-mode-toggle */
+            bottom: calc(100% + 1rem); /* 1rem above the toggle button */
+            right: 0; /* Align to the right of the toggle button */
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100; /* Ensure it's above other content */
+            display: none; /* Hidden by default, toggled to flex by JS */
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            opacity: 0; /* Start hidden */
+            transform: translateY(10px); /* Start slightly below */
+            pointer-events: none; /* Disable interaction when hidden */
+            min-width: 150px; /* Ensure buttons fit */
+            align-items: center; /* Center buttons horizontally */
+        }
+
+        #scanModeOptions.visible {
+            display: flex; /* Show as flex column */
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        #scanModeOptions button {
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%; /* Make buttons fill the width */
+            padding: 0.5rem 1rem; /* Adjust padding */
+        }
+        #scanModeOptions button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Quote Container Styles */
+        .quote-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: linear-gradient(145deg, var(--quote-gradient-start), var(--quote-gradient-end));
+            border-radius: 12px;
+            box-shadow:
+                0 10px 30px var(--quote-shadow-color),
+                inset 0 0 20px var(--quote-inset-shadow-color);
+            transform: perspective(500px) rotateX(10deg);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: float 6s ease-in-out infinite;
+            color: var(--text-primary); /* Ensure text color adapts */
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: perspective(500px) rotateX(10deg) translateY(0);
+            }
+            50% {
+                transform: perspective(500px) rotateX(12deg) translateY(-10px);
+            }
+        }
+
+        .quote-container:hover {
+            animation: none;
+            transform: perspective(500px) rotateX(12deg) translateY(-5px);
+        }
+
+        .quote-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+            margin: 0;
+            text-align: center;
+        }
+
+        .quote-author {
+            display: block;
+            margin-top: 1rem;
+            text-align: right;
+            font-weight: 600;
+            color: var(--quote-author-color);
+        }
+
+        /* Header Styles */
+        .header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--container-bg); /* Use container background */
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: 1fr; /* Stack elements on small screens */
+                text-align: center;
+                padding: 1rem;
+            }
+            .datetime-container {
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+            .logo-container {
+                justify-content: center;
+            }
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--header-border-gradient-start), var(--header-border-gradient-mid), var(--header-border-gradient-end));
+            filter: blur(4px);
+        }
+
+        .datetime-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .datetime-item {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .datetime-label {
+            font-weight: 600;
+            color: var(--gold-secondary);
+        }
+
+        .title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 20px var(--active-green); /* Use active green for logo glow */
+            object-fit: contain;
+            z-index: 2;
+            animation:
+                logo-pulse-green 2s infinite alternate,
+                logo-bounce 0.8s ease-in-out;
+            transform-origin: center;
+        }
+
+        @keyframes logo-bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+        }
+
+        @keyframes logo-pulse-green {
+            0% { box-shadow: 0 0 20px var(--active-green); }
+            100% { box-shadow: 0 0 30px var(--active-green); }
+        }
+
+        .main-title {
+            font-family: 'Inter', sans-serif; /* Using Inter */
+            font-size: 2.5rem;
+            color: var(--text-primary); /* Ensure it uses text-primary for theme adaptation */
+            margin: 0;
+            text-shadow: 0 0 10px var(--title-shadow-color);
+            letter-spacing: 1px;
+            animation: title-glow 2s infinite alternate;
+        }
+
+        @keyframes title-glow {
+            0% { text-shadow: 0 0 10px var(--title-shadow-color); }
+            100% { text-shadow: 0 0 20px var(--title-shadow-color); }
+        }
+
+        .tagline {
+            font-family: system-ui, sans-serif;
+            font-size: 1.1rem;
+            color: var(--gold-primary);
+            margin-top: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            position: relative;
+            z-index: 50; /* Ensure search results appear above other content */
+        }
+        @media (max-width: 768px) {
+            .search-container {
+                padding: 1rem;
+            }
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--container-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .search-input::placeholder {
+            color: var(--text-primary);
+            opacity: 0.7;
+        }
+        .search-input:focus {
+            border-color: #4299e1; /* Blue focus ring */
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+        body.dark .search-input:focus {
+            border-color: #818cf8; /* Indigo focus ring */
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.5);
+        }
+
+        .search-results {
+            position: absolute;
+            width: calc(100% - 4rem); /* Account for padding in container */
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-top: 5px;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+            .search-results {
+                width: calc(100% - 2rem); /* Account for padding in container */
+            }
+        }
+        body.dark .search-results {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .search-result-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: background-color 0.2s ease;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: rgba(67, 97, 238, 0.1); /* Blue hover for light theme */
+        }
+        body.dark .search-result-item:hover {
+            background: rgba(129, 140, 248, 0.1); /* Indigo hover for dark theme */
+        }
+
+        /* Highlight animation for search result click */
+        .ticker-item.highlight {
+            animation: highlight-pulse 1.5s 2; /* Pulse twice */
+        }
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0px rgba(255, 255, 0, 0); background-color: var(--border-color); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.7); background-color: #fef08a; } /* Yellow glow */
+            100% { box-shadow: 0 0 0px rgba(255, 255, 0, 0); background-color: var(--border-color); }
+        }
+        body.dark @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0px rgba(255, 255, 0, 0); background-color: var(--border-color); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.7); background-color: #a16207; } /* Darker yellow/orange glow */
+            100% { box-shadow: 0 0 0px rgba(255, 255, 0, 0); background-color: var(--border-color); }
+        }
+
+        /* Ticker Tape Styles */
+        .ticker-tape-container {
+            width: 100%;
+            padding: 0.5rem 0;
+            background: var(--container-bg); /* Use container background for consistency */
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+        body.dark .ticker-tape-container {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .ticker-tape-container .tradingview-widget-container {
+            height: auto !important; /* Ensure height adapts */
+        }
+
+        /* Widgets Container Styles */
+        .widgets-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+            height: 50vh; /* Fixed height for the container */
+            margin: 2rem auto; /* Center and provide margin */
+            max-width: 6xl; /* Match main container width */
+        }
+
+        .widgets-container .widget {
+            flex: 1 1 45%; /* Allow widgets to grow and shrink */
+            min-width: 300px; /* Minimum width before wrapping */
+            height: 100%; /* Take full height of parent */
+            background-color: var(--container-bg); /* Use container background */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Subtle shadow */
+            overflow: hidden; /* Hide overflow for widgets */
+        }
+        body.dark .widgets-container .widget {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .sector-widget {
+            flex: 0 0 40%; /* Specific width for sector widget */
+        }
+
+        .heatmap-widget {
+            flex: 0 0 58%; /* Specific width for heatmap widget, leaving gap */
+        }
+
+        /* Ensure TradingView widgets fill their parent containers */
+        .widgets-container .tradingview-widget-container {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        @media (max-width: 768px) {
+            .widgets-container {
+                height: auto; /* Auto height on small screens */
+                flex-direction: column; /* Stack widgets vertically */
+                padding: 0 1rem; /* Add padding for mobile */
+            }
+            .widgets-container .widget,
+            .sector-widget,
+            .heatmap-widget {
+                flex: 0 0 100%; /* Full width on small screens */
+                height: 300px; /* Fixed height for each widget on mobile */
+            }
+            /* Adjust scan mode options for smaller screens */
+            #scanModeOptions {
+                bottom: calc(100% + 1rem); /* Keep relative to button */
+                right: 50%;
+                transform: translateX(50%) translateY(10px); /* Adjust transform for centering */
+                width: fit-content;
+                left: auto; /* Reset left */
+            }
+            #scanModeOptions.visible {
+                transform: translateX(50%) translateY(0);
+            }
+        }
+
+        /* Random Ticker Styles */
+        .random-ticker-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(67, 97, 238, 0.2); /* Fixed background for visibility */
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+            color: var(--text-primary); /* Ensure text color adapts */
+        }
+        body.dark .random-ticker-box {
+            background: rgba(129, 140, 248, 0.2); /* Darker background for dark theme */
+        }
+
+        .random-ticker-label {
+            font-size: 0.8rem;
+            color: var(--gold-primary);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .random-ticker-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+            position: relative;
+        }
+
+        .random-ticker-value:hover {
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* Animation Styles */
+        @keyframes shuffleIn {
+            0% {
+                opacity: 0;
+                transform: translateY(5px) rotateX(90deg);
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .random-ticker-value.shuffle {
+            animation: shuffleIn 0.5s ease-out forwards;
+            transform-origin: top center;
+        }
+
+        /* Responsive Adjustments for Random Ticker */
+        @media (max-width: 768px) {
+            .random-ticker-box {
+                position: static; /* Remove fixed positioning on small screens */
+                margin: 10px auto; /* Center it */
+                width: fit-content;
+                padding: 8px 12px; /* Smaller padding */
+                font-size: 0.9rem;
+            }
+            .random-ticker-label {
+                font-size: 0.7rem;
+            }
+            .random-ticker-value {
+                font-size: 1rem;
+                min-width: 100px;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--container-bg); /* Match main container background */
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.03); /* Subtle shadow on top */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark .footer {
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--gold-primary);
+            text-decoration: underline;
+        }
+
+        /* Sector filter styles */
+        .filter-container {
+            display: flex;
+            justify-content: flex-end; /* Align to right */
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            .filter-container {
+                justify-content: center; /* Center on small screens */
+                flex-wrap: wrap; /* Allow wrapping */
+            }
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--container-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .filter-select:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.3);
+        }
+        body.dark .filter-select:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.3);
+        }
+
+        /* Sector count badge */
+        .sector-card .count-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Full rounded */
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        /* Market Weightage Section Styles */
+        .market-weightage-container {
+            max-width: 6xl;
+            margin: 2rem auto;
+            background-color: var(--container-bg);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            color: var(--text-primary);
+        }
+        body.dark .market-weightage-container {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .weightage-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .weightage-item {
+            background-color: var(--border-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        .weightage-item:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        body.dark .weightage-item:hover {
+            background-color: rgba(129, 140, 248, 0.1);
+        }
+
+        .weightage-percentage {
+            font-weight: bold;
+            color: var(--active-green);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <!-- Header Section -->
+    <header class="header">
+        <div class="datetime-container">
+            <div class="datetime-item">
+                <span class="datetime-label">Date:</span>
+                <span id="current-date">Loading...</span>
+            </div>
+            <div class="datetime-item">
+                <span class="datetime-label">Time:</span>
+                <span id="current-time">Loading...</span>
+            </div>
+            <div class="datetime-item">
+                <span class="datetime-label">Remaining in Month:</span>
+                <span id="days-month">Loading...</span>
+            </div>
+            <div class="datetime-item">
+                <span class="datetime-label">Remaining in Year:</span>
+                <span id="days-year">Loading...</span>
+            </div>
+        </div>
+
+        <div class="title-container">
+            <div class="logo-container">
+                <!-- Inline SVG Logo - You can replace this with an <img> tag if you have a logo.png file: -->
+                <!-- <img src="logo.png" alt="Company Logo" class="logo"> -->
+                <svg class="logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background circle -->
+                    <circle cx="50" cy="50" r="45" stroke="var(--border-color)" stroke-width="2" fill="var(--container-bg)"/>
+                    <!-- Simple ascending line chart -->
+                    <path d="M20 60 L40 40 L60 55 L80 35" stroke="var(--active-green)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <!-- Small dots on the line -->
+                    <circle cx="20" cy="60" r="3" fill="var(--active-green)"/>
+                    <circle cx="40" cy="40" r="3" fill="var(--active-green)"/>
+                    <circle cx="60" cy="55" r="3" fill="var(--active-green)"/>
+                    <circle cx="80" cy="35" r="3" fill="var(--active-green)"/>
+                </svg>
+                <div>
+                    <h1 class="main-title">Intraday Quick Grabber</h1>
+                    <div class="tagline" id="tagline">Catch the Pulse, Ride the Move.</div>
+                </div>
+            </div>
+        </div>
+        <div></div> <!-- Empty div for grid alignment -->
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="tickerSearch" placeholder="Search ticker (Press '/' to focus)" class="search-input">
+        <div id="searchResults" class="search-results"></div>
+    </div>
+
+    <!-- Ticker Tape Widget -->
+    <div class="ticker-tape-container">
+        <div id="tickerTapeWidgetContainer" class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <!-- Script will be injected by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Market Widgets Container -->
+    <div class="widgets-container max-w-6xl mx-auto">
+        <!-- Sector Widget -->
+        <div class="widget sector-widget">
+            <div id="sectorWidgetContainer" class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <!-- Script will be injected by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Heatmap Widget -->
+        <div class="widget heatmap-widget">
+            <div id="heatmapWidgetContainer" class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <!-- Script will be injected by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Weightage Section -->
+    <div class="market-weightage-container">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-center">Indian Market Sector Weightages (Approximate)</h2>
+        <p class="text-sm text-center mb-4 opacity-80">
+            These percentages represent approximate market capitalization weightages in broader Indian indices (like Nifty 50),
+            providing a general sense of sector dominance. They are not real-time and may vary.
+        </p>
+        <ul id="marketWeightageList" class="weightage-list">
+            <!-- Market weightages will be injected here by JavaScript -->
+        </ul>
+    </div>
+
+    <div class="max-w-6xl mx-auto rounded-xl p-6 sm:p-8 md:p-10 main-container mt-4"> <!-- Added mt-4 for spacing -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800">
+                Indian F&O Stocks: Sector View
+            </h1>
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-4 py-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-colors duration-300">
+                Switch to Dark
+            </button>
+        </div>
+
+        <!-- Sector Filter -->
+        <div class="filter-container">
+            <span class="filter-label">Sort by:</span>
+            <select id="sectorSort" class="filter-select">
+                <option value="alphabetical">Alphabetical</option>
+                <option value="stockCountDesc">Stock Count (High to Low)</option>
+            </select>
+        </div>
+
+        <!-- Sector Grid View -->
+        <div id="sectorGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Sector cards will be injected here by JavaScript -->
+        </div>
+
+        <!-- Ticker List View (initially hidden) -->
+        <div id="tickerList" class="hidden">
+            <button id="backButton" class="back-button bg-gray-700 text-white px-6 py-3 rounded-lg shadow-md mb-6 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75">
+                ← Back to Sectors
+            </button>
+            <h2 id="sectorNameTitle" class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6"></h2>
+            <ul id="tickersContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Tickers will be injected here by JavaScript -->
+            </ul>
+        </div>
+
+        <!-- TradingView Chart Container (hidden by default) -->
+        <div id="tradingviewChartContainer" class="rounded-xl">
+            <!-- TradingView widget will be injected here -->
+        </div>
+    </div>
+
+
+    <!-- Scan Mode Toggle Button -->
+    <button class="scan-mode-toggle" id="scanModeToggle" title="Scan Mode (Ctrl+Shift+S)">
+        <span class="scan-icon">🔍</span>
+        <span>Scan Mode</span>
+        <!-- Scan Mode Options (initially hidden) - Moved inside to allow relative positioning -->
+        <div id="scanModeOptions" class="absolute bg-gray-200 dark:bg-gray-700 p-3 rounded-xl shadow-lg z-100 hidden flex-col gap-2">
+            <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">Open charts in:</p>
+            <button id="scanModePopupBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">Popup (2)</button>
+            <button id="scanModeNewTabBtn" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">New Tab (1)</button>
+        </div>
+    </button>
+
+    <!-- Random Ticker Box -->
+    <div class="random-ticker-box">
+        <div class="random-ticker-label">Random Ticker</div>
+        <div class="random-ticker-value" id="randomTicker">Loading...</div>
+    </div>
+
+    <!-- Quote Container -->
+    <div class="quote-container">
+        <p class="quote-text" id="quoteText">"The market is a device for transferring money from the impatient to the patient."</p>
+        <span class="quote-author" id="quoteAuthor">- Warren Buffett</span>
+    </div>
+
+    <!-- Footer with Social Handles -->
+    <div class="footer">
+        Designed by <a href="https://www.instagram.com/nerdyintruder/" target="_blank">@Nerdyintruder</a> |
+        <a href="https://twitter.com/nerdyintruder" target="_blank">Twitter</a> |
+        <a href="https://github.com/nerdyintruder" target="_blank">GitHub</a>
+    </div>
+
+    <script>
+        // F&O stock data, categorized by sector based on user's specific sector list.
+        // Tickers are assigned to the provided 19 sectors. Some tickers may appear in multiple
+        // categories (e.g., in their specific sector and also in 'SENSEX' or 'midSELECT 50')
+        // to fulfill the request of "putting tickers in them accordingly".
+        const fnoStocksData = {
+            "AUTO": ["APOLLOTYRE", "ASHOKLEY", "BAJAJ-AUTO", "BALKRISIND", "EICHERMOT", "HEROMOTOCO", "M&M", "MARUTI", "MOTHERSON", "SONACOMS", "TVSMOTOR", "UNOMINDA"],
+            "BANK": ["AXISBANK", "HDFCBANK", "ICICIBANK", "INDUSINDBK", "KOTAKBANK", "SBIN", "AUBANK", "FEDERALBNK", "RBLBANK", "YESBANK", "BANDHANBNK", "BANKBARODA", "BANKINDIA", "CANBK", "INDIANB", "PNB", "UNIONBANK"],
+            "CEMENT": ["ACC", "AMBUJACEM", "DALBHARAT", "GRASIM", "SHREECEM", "ULTRACEMCO"],
+            "CONSUMER DURABLES": ["DIXON", "HAVELLS", "VOLTAS", "KALYANKJIL", "KEI", "POLYCAB", "ASTRAL", "PIDILITIND"],
+            "CONSUMPTION": ["BRITANNIA", "COLPAL", "DABUR", "GODREJCP", "HINDUNILVR", "ITC", "JUBLFOOD", "MARICO", "NESTLEIND", "PATANJALI", "TATACONSUM", "TTKPRESTIG", "VBL"],
+            "ENERGY": ["ADANIENSOL", "ADANIGREEN", "ATGL", "BPCL", "CESC", "GAIL", "HINDOILEXP", "HINDPETRO", "IGL", "IOC", "JSWENERGY", "MGL", "NTPC", "ONGC", "PETRONET", "POWERGRID", "RELIANCE", "SJVN", "TATAPOWER", "TORNTPOWER"],
+            "FINANCIAL SERVICES": ["360ONE", "ABCAPITAL", "ANGELONE", "BAJAJFINSV", "BAJFINANCE", "CAMS", "CHOLAFIN", "HDFCAMC", "HDFCLIFE", "ICICIGI", "ICICIPRULI", "IIFL", "JIOFIN", "KFINTECH", "LICHSGFIN", "LICI", "LTF", "M&MFIN", "MANAPPURAM", "MCX", "MFSL", "MUTHOOTFIN", "PAYTM", "PEL", "PFC", "PNBHOUSING", "POLICYBZR", "POONAWALLA", "RECLTD", "SBICARD", "SBILIFE", "SHRIRAMFIN"],
+            "FMCG": ["BRITANNIA", "COLPAL", "DABUR", "GODREJCP", "HINDUNILVR", "ITC", "JUBLFOOD", "MARICO", "NESTLEIND", "PATANJALI", "TATACONSUM", "TTKPRESTIG", "VBL"],
+            "HEALTHCARE": ["APOLLOHOSP", "FORTIS", "MAXHEALTH", "LALPATHLAB"],
+            "IT": ["BSOFT", "COFORGE", "CYIENT", "HCLTECH", "INFY", "KPITTECH", "LTIM", "MPHASIS", "NAUKRI", "OFSS", "PERSISTENT", "TATAELXSI", "TCS", "TECHM", "WIPRO"],
+            "MEDIA": ["ZEEL", "SUNTV", "PVRINOX"],
+            "METAL": ["HINDALCO", "HINDCOPPER", "HINDZINC", "JINDALSTEL", "JSL", "JSWSTEEL", "NATIONALUM", "NMDC", "SAIL", "TATASTEEL", "VEDL"],
+            "MIDCAP SELECT": ["AMBER", "APLAPOLLO", "BDL", "BHEL", "BLUESTARCO", "CUMMINSIND", "DELHIVERY", "DMART", "HAL", "INDHOTEL", "INOXWIND", "IRCTC", "IREDA", "MAZDOCK", "NBCC", "NCC", "PVRINOX", "TCIEXP", "CONCOR", "ESCORTS", "IEX", "CDSL", "ETERNAL", "RAMCOCEM", "JKCEMENT", "PRESTIGE", "HINDUPETRO"],
+            "OIL & GAS": ["ONGC", "GAIL", "BPCL", "IOC", "MGL", "IGL", "HINDOILEXP", "HINDPETRO", "PETRONET"],
+            "PHARMA": ["ALKEM", "AUROPHARMA", "BIOCON", "CIPLA", "DIVISLAB", "DRREDDY", "GLENMARK", "GRANULES", "LAURUSLABS", "LUPIN", "PPLPHARMA", "SUNPHARMA", "SYNGENE", "TORNTPHARM", "ZYDUSLIFE"],
+            "PRIVATE BANK": ["AUBANK", "AXISBANK", "FEDERALBNK", "HDFCBANK", "ICICIBANK", "INDUSINDBK", "KOTAKBANK", "RBLBANK", "YESBANK"],
+            "PSU BANK": ["BANDHANBNK", "BANKBARODA", "BANKINDIA", "CANBK", "INDIANB", "PNB", "SBIN", "UNIONBANK"],
+            "REALTY": ["DLF", "GODREJPROP", "LODHA", "OBEROIRLTY", "PHOENIXLTD"],
+            "SENSEX": ["RELIANCE", "HDFCBANK", "ICICIBANK", "INFY", "TCS", "LT", "ITC", "HINDUNILVR", "MARUTI", "KOTAKBANK", "AXISBANK", "SBIN", "TITAN", "SUNPHARMA", "DRREDDY", "ASIANPAINT", "ULTRACEMCO", "M&M", "NESTLEIND", "BAJFINANCE", "BHARTIARTL", "POWERGRID", "NTPC", "INDUSINDBK", "HCLTECH"],
+            "midSELECT 50": ["ADANIPORTS", "AMBUJACEM", "APOLLOHOSP", "BAJAJ-AUTO", "BEL", "BHEL", "BPCL", "BRITANNIA", "CHOLAFIN", "COALINDIA", "CONCOR", "DABUR", "DMART", "EICHERMOT", "GAIL", "GODREJCP", "HAL", "INDHOTEL", "INOXWIND", "IRCTC", "IREDA", "MAZDOCK", "NBCC", "NCC", "PVRINOX", "TCIEXP", "CONCOR", "ESCORTS", "IEX", "CDSL", "ETERNAL", "RAMCOCEM", "JKCEMENT", "PRESTIGE", "HINDUPETRO"]
+        };
+
+        // Approximate market capitalization weightages for major Indian sectors (Nifty 50 perspective)
+        // These are general approximations and can fluctuate.
+        const marketWeightages = {
+            "FINANCIAL SERVICES": "35.0%",
+            "IT": "15.0%",
+            "OIL & GAS": "12.0%",
+            "FMCG": "9.0%",
+            "AUTO": "6.0%",
+            "PHARMA": "5.0%",
+            "METAL": "4.0%",
+            "ENERGY": "3.5%", // Broader energy beyond just Oil & Gas
+            "CEMENT": "2.5%",
+            "CONSUMER DURABLES": "2.0%",
+            "HEALTHCARE": "2.0%",
+            "CAPITAL GOODS": "2.0%",
+            "TELECOMMUNICATION": "1.5%",
+            "REALTY": "1.0%",
+            "MEDIA": "0.5%",
+            // Note: BANK, PRIVATE BANK, PSU BANK are sub-sectors of FINANCIAL SERVICES.
+            // SENSEX, MIDCAP SELECT, midSELECT 50 are indices, not sectors, and are not included in this sector weightage list.
+        };
+
+        const sectorGridDiv = document.getElementById('sectorGrid');
+        const tickerListDiv = document.getElementById('tickerList');
+        const backButton = document.getElementById('backButton');
+        const sectorNameTitle = document.getElementById('sectorNameTitle');
+        const tickersContainer = document.getElementById('tickersContainer');
+        const themeToggle = document.getElementById('themeToggle');
+        const tradingviewChartContainer = document.getElementById('tradingviewChartContainer');
+        const scanModeToggle = document.getElementById('scanModeToggle');
+        const scanModeOptions = document.getElementById('scanModeOptions'); // New element
+        const scanModePopupBtn = document.getElementById('scanModePopupBtn'); // New element
+        const scanModeNewTabBtn = document.getElementById('scanModeNewTabBtn'); // New element
+        const quoteText = document.getElementById('quoteText');
+        const quoteAuthor = document.getElementById('quoteAuthor');
+        const tickerSearch = document.getElementById('tickerSearch');
+        const searchResultsDiv = document.getElementById('searchResults');
+        const mainContainer = document.querySelector('.main-container'); // Unused but kept for reference
+        const randomTickerDisplay = document.getElementById('randomTicker');
+        const sectorSortSelect = document.getElementById('sectorSort');
+        const marketWeightageList = document.getElementById('marketWeightageList');
+
+
+        // Widget containers
+        const tickerTapeWidgetContainer = document.getElementById('tickerTapeWidgetContainer');
+        const sectorWidgetContainer = document.getElementById('sectorWidgetContainer');
+        const heatmapWidgetContainer = document.getElementById('heatmapWidgetContainer');
+
+
+        let scanModeActive = false;
+        let scanModePopup = null; // Global variable to hold the popup window reference
+        // Default to popup if no preference is saved
+        let scanModeChartPreference = localStorage.getItem('scanModeChartPreference') || 'popup';
+
+        // Quotes Data
+        const quotes = [
+            { text: "Opportunities don't happen, you create them.", author: "" },
+            { text: "The market is always right. Never argue with it.", author: "" },
+            { text: "Price is what you pay. Value is what you get.", author: "Benjamin Graham" },
+            { text: "Rule No.1: Never lose money. Rule No.2: Never forget Rule No.1.", author: "Warren Buffett" },
+            { text: "The stock market is a device for transferring money from the impatient to the patient.", author: "Warren Buffett" },
+            { text: "Be fearful when others are greedy and greedy when others are fearful.", author: "Warren Buffett" },
+            { text: "It's not whether you're right or wrong that's important, but how much money you make when you're right and how much you lose when you're wrong.", author: "George Soros" },
+            { text: "Invest in yourself, your career is the engine of your wealth.", author: "Paul Tudor Jones" },
+            { text: "The four most dangerous words in investing are: 'This time it's different.'", author: "Sir John Templeton" },
+            { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+            { text: "The best investment you can make is in an index fund.", author: "Jack Bogle" },
+            { text: "Risk comes from not knowing what you're doing.", author: "Warren Buffett" },
+            { text: "The intelligent investor is a realist who sells to optimists and buys from pessimists.", author: "Benjamin Graham" },
+            { text: "Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it.", author: "Albert Einstein" }
+        ];
+
+        /**
+         * Applies the saved theme preference or defaults to light.
+         */
+        function applyTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark');
+                themeToggle.textContent = 'Switch to Light';
+            } else {
+                document.body.classList.remove('dark');
+                themeToggle.textContent = 'Switch to Dark';
+            }
+            // Re-render chart if visible to apply new theme
+            if (tradingviewChartContainer.classList.contains('visible')) {
+                const currentTicker = tradingviewChartContainer.dataset.currentTicker;
+                if (currentTicker) {
+                    renderTradingViewChart(currentTicker);
+                }
+            }
+            // Re-render all TradingView widgets to apply new theme
+            renderAllTradingViewWidgets();
+        }
+
+        /**
+         * Toggles between light and dark themes.
+         */
+        function toggleTheme() {
+            if (document.body.classList.contains('dark')) {
+                document.body.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = 'Switch to Dark';
+            } else {
+                document.body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = 'Switch to Light';
+            }
+            // Re-render chart if visible to apply new theme
+            if (tradingviewChartContainer.classList.contains('visible')) {
+                const currentTicker = tradingviewChartContainer.dataset.currentTicker;
+                if (currentTicker) {
+                    renderTradingViewChart(currentTicker);
+                }
+            }
+            // Re-render all TradingView widgets to apply new theme
+            renderAllTradingViewWidgets();
+        }
+
+        /**
+         * Updates the visual state of the scan mode preference buttons.
+         */
+        function updateScanModePreferenceButtons() {
+            if (scanModeChartPreference === 'popup') {
+                scanModePopupBtn.classList.add('bg-blue-700');
+                scanModeNewTabBtn.classList.remove('bg-purple-700');
+            } else {
+                scanModeNewTabBtn.classList.add('bg-purple-700');
+                scanModePopupBtn.classList.remove('bg-blue-700');
+            }
+        }
+
+        /**
+         * Toggles Scan Mode on or off and manages the display of scan mode options.
+         */
+        function toggleScanMode() {
+            scanModeActive = !scanModeActive;
+            scanModeToggle.classList.toggle('active', scanModeActive);
+            localStorage.setItem('scanModeActive', scanModeActive);
+
+            if (scanModeActive) {
+                // Show scan mode options with a slight delay for animation
+                scanModeOptions.classList.add('visible');
+                updateScanModePreferenceButtons(); // Highlight the currently selected preference
+            } else {
+                // Hide scan mode options
+                scanModeOptions.classList.remove('visible');
+                // If scan mode is deactivated, hide any currently displayed embedded chart
+                hideTradingViewChart();
+                // Close the popup window if it's open
+                if (scanModePopup && !scanModePopup.closed) {
+                    scanModePopup.close();
+                    scanModePopup = null;
+                }
+            }
+        }
+
+        /**
+         * Renders the sector grid on the main page based on current sort order.
+         */
+        function renderSectorGrid() {
+            sectorGridDiv.innerHTML = ''; // Clear previous content
+            sectorGridDiv.classList.remove('hidden');
+            tickerListDiv.classList.add('hidden');
+            tradingviewChartContainer.classList.remove('visible'); // Hide chart if visible
+            tickerSearch.value = ''; // Clear search bar
+            searchResultsDiv.style.display = 'none'; // Hide search results
+
+            let sectors = Object.keys(fnoStocksData);
+            const sortBy = sectorSortSelect.value;
+
+            if (sortBy === 'alphabetical') {
+                sectors.sort((a, b) => a.localeCompare(b));
+            } else if (sortBy === 'stockCountDesc') {
+                sectors.sort((a, b) => fnoStocksData[b].length - fnoStocksData[a].length);
+            }
+
+            // Iterate over each sorted sector
+            sectors.forEach(sector => {
+                const sectorCard = document.createElement('div');
+                sectorCard.className = 'sector-card bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-6 rounded-xl shadow-md cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out flex flex-col items-center justify-center text-center';
+                sectorCard.innerHTML = `
+                    <h3 class="text-xl sm:text-2xl font-bold mb-2">${sector}</h3>
+                    <p class="text-sm opacity-90">
+                        <span class="count-badge">${fnoStocksData[sector].length} Tickers</span>
+                    </p>
+                `;
+                sectorCard.dataset.sector = sector; // Store sector name as data attribute
+
+                // Add click event listener to each sector card
+                sectorCard.addEventListener('click', () => showTickersForSector(sector));
+                sectorGridDiv.appendChild(sectorCard);
+            });
+        }
+
+        /**
+         * Displays the tickers for a selected sector.
+         * @param {string} sectorName - The name of the sector to display.
+         */
+        function showTickersForSector(sectorName) {
+            sectorGridDiv.classList.add('hidden'); // Hide sector grid
+            tickerListDiv.classList.remove('hidden'); // Show ticker list
+            sectorNameTitle.textContent = `${sectorName} Sector Stocks`;
+            tickersContainer.innerHTML = ''; // Clear previous tickers
+            tradingviewChartContainer.classList.remove('visible'); // Hide chart if visible
+
+            const tickers = fnoStocksData[sectorName];
+            if (tickers && tickers.length > 0) {
+                tickers.forEach(ticker => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'ticker-item bg-gray-100 text-gray-800 p-4 rounded-lg shadow-sm text-center font-medium text-lg cursor-pointer';
+                    listItem.textContent = ticker;
+                    listItem.dataset.ticker = ticker; // Store ticker name as data attribute
+
+                    // Add mouseenter and mouseleave event listeners for TradingView chart
+                    listItem.addEventListener('mouseenter', (event) => {
+                        if (scanModeActive) {
+                            openTradingViewWindow(ticker, true, scanModeChartPreference); // Use preference
+                        } else {
+                            showTradingViewChart(ticker, event); // Show embedded mini-chart
+                        }
+                    });
+                    listItem.addEventListener('mouseleave', () => {
+                        if (!scanModeActive) { // Only hide embedded chart if scan mode is not active
+                            hideTradingViewChart();
+                        }
+                    });
+
+                    tickersContainer.appendChild(listItem);
+                });
+            } else {
+                const noTickersMessage = document.createElement('li');
+                noTickersMessage.className = 'col-span-full text-center text-gray-600 text-lg py-8';
+                noTickersMessage.textContent = 'No tickers found for this sector.';
+                tickersContainer.appendChild(noTickersMessage);
+            }
+        }
+
+        /**
+         * Renders the TradingView mini-chart for a given ticker.
+         * This function is used when Scan Mode is OFF.
+         * @param {string} tickerSymbol - The stock ticker symbol (e.g., "RELIANCE").
+         * @param {Event} event - The mouse event to position the chart.
+         */
+        function showTradingViewChart(tickerSymbol, event) {
+            // Store the current ticker for theme changes
+            tradingviewChartContainer.dataset.currentTicker = tickerSymbol;
+
+            // Clear any existing widget content
+            tradingviewChartContainer.innerHTML = '';
+
+            const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+            const chartColor = theme === 'dark' ? '#818cf8' : '#4299e1'; // Indigo for dark, blue for light
+
+            // Create the TradingView widget script element
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-chart.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "symbol": `NSE:${tickerSymbol}`, // Prepend NSE for Indian stocks
+                "width": "350",
+                "height": "220",
+                "locale": "in",
+                "dateRange": "12M",
+                "colorTheme": theme,
+                "trendLineColor": chartColor,
+                "fontColor": theme === 'dark' ? "#cbd5e0" : "#787B86",
+                "underLineColor": theme === 'dark' ? "rgba(129, 140, 248, 0.15)" : "rgba(66, 153, 225, 0.15)",
+                // Removed the problematic "is": "fillLine" property which caused script errors
+                "autosize": false,
+                "noTimeScale": false
+            });
+
+            tradingviewChartContainer.appendChild(script);
+
+            // Position the chart container relative to the hovered ticker
+            const listItemRect = event.target.getBoundingClientRect();
+            const containerRect = document.body.getBoundingClientRect();
+
+            // Calculate position to appear to the right or left, and slightly below/above
+            let top = listItemRect.top + window.scrollY;
+            let left = listItemRect.right + window.scrollX + 15; // 15px to the right of the ticker
+
+            // Adjust if it goes off screen to the right
+            if (left + 350 > containerRect.right) { // 350 is chart width
+                left = listItemRect.left + window.scrollX - 350 - 15; // Position to the left
+            }
+
+            // Adjust if it goes off screen at the bottom
+            if (top + 220 > containerRect.bottom + window.scrollY) { // 220 is chart height
+                top = listItemRect.bottom + window.scrollY - 220 - 15; // Position above the ticker
+            }
+
+            tradingviewChartContainer.style.top = `${top}px`;
+            tradingviewChartContainer.style.left = `${left}px`;
+            tradingviewChartContainer.classList.add('visible');
+        }
+
+        /**
+         * Hides the TradingView chart.
+         * This function is used when Scan Mode is OFF.
+         */
+        function hideTradingViewChart() {
+            tradingviewChartContainer.classList.remove('visible');
+            // Clear the content after transition to avoid flicker on next show
+            setTimeout(() => {
+                tradingviewChartContainer.innerHTML = '';
+                delete tradingviewChartContainer.dataset.currentTicker;
+            }, 200); // Match transition duration
+        }
+
+        /**
+         * Opens a full TradingView chart in a new window/popup or new tab based on preference.
+         * This function is used when Scan Mode is ON.
+         * @param {string} ticker - The stock ticker symbol.
+         * @param {boolean} isHover - True if called from a hover event.
+         * @param {string} preference - 'popup' or 'newtab'
+         */
+        function openTradingViewWindow(ticker, isHover = false, preference = 'popup') {
+            if (!ticker) return;
+
+            const url = `https://www.tradingview.com/chart/?symbol=NSE:${ticker}`;
+
+            if (isHover && scanModeActive) {
+                if (preference === 'popup') {
+                    // If popup already exists and is not closed, update its URL
+                    if (scanModePopup && !scanModePopup.closed) {
+                        scanModePopup.location.href = url;
+                        scanModePopup.focus();
+                    } else {
+                        // Otherwise, open a new popup window
+                        scanModePopup = window.open(
+                            url,
+                            "ScanModePopup", // Window name to reuse the same window
+                            "width=800,height=600,left=100,top=100" // Adjust size as needed
+                        );
+                    }
+                } else if (preference === 'newtab') {
+                    // Reuse the same tab by giving it a consistent name
+                    window.open(url, "ScanModeNewTab");
+                }
+            } else {
+                // For direct clicks (not hover in scan mode), always open in a new tab
+                window.open(url, "_blank");
+            }
+        }
+
+        /**
+         * Initializes the quote display functionality.
+         */
+        function initQuotes() {
+            function showRandomQuote() {
+                const quote = quotes[Math.floor(Math.random() * quotes.length)];
+                quoteText.textContent = `"${quote.text}"`;
+                quoteAuthor.textContent = quote.author ? `- ${quote.author}` : '';
+            }
+
+            showRandomQuote();
+            setInterval(showRandomQuote, 10000); // Change quote every 10 seconds
+        }
+
+        // Date/Time Functionality
+        function initDateTime() {
+            function updateDateTime() {
+                const now = new Date();
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    timeZone: 'Asia/Kolkata'
+                };
+
+                document.getElementById('current-date').textContent = now.toLocaleDateString('en-IN', options);
+
+                const timeOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true,
+                    timeZone: 'Asia/Kolkata'
+                };
+                document.getElementById('current-time').textContent = now.toLocaleTimeString('en-IN', timeOptions);
+
+                const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                const daysInMonth = lastDayOfMonth.getDate();
+                const daysLeftMonth = daysInMonth - now.getDate();
+                document.getElementById('days-month').textContent = `${daysLeftMonth} days`;
+
+                const lastDayOfYear = new Date(now.getFullYear(), 11, 31);
+                const daysLeftYear = Math.ceil((lastDayOfYear - now) / (1000 * 60 * 60 * 24));
+                document.getElementById('days-year').textContent = `${daysLeftYear} days`;
+            }
+
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        }
+
+        /**
+         * Renders the Ticker Tape widget.
+         */
+        function renderTickerTapeWidget() {
+            tickerTapeWidgetContainer.innerHTML = '<div class="tradingview-widget-container__widget"></div>'; // Clear and re-add inner div
+            const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "symbols": [
+                    { "description": "Sensex", "proName": "BSE:SENSEX" },
+                    { "description": "Bankex", "proName": "BSE:BANK" },
+                    { "description": "BSE IT", "proName": "BSE:FOCIT" },
+                    { "description": "Reliance", "proName": "BSE:RELIANCE" },
+                    { "description": "HDFC Bank", "proName": "BSE:HDFCBANK" },
+                    { "description": "ICICI Bank", "proName": "BSE:ICICIBANK" },
+                    { "description": "Infosys", "proName": "BSE:INFY" },
+                    { "description": "L&T", "proName": "BSE:LT" },
+                    { "description": "TCS", "proName": "BSE:TCS" },
+                    { "description": "SBI", "proName": "BSE:SBIN" },
+                    { "description": "ITC", "proName": "BSE:ITC" },
+                    { "description": "Airtel", "proName": "BSE:BHARTIARTL" },
+                    { "description": "Axis Bank", "proName": "BSE:AXISBANK" }
+                ],
+                "showSymbolLogo": true,
+                "isTransparent": false,
+                "displayMode": "adaptive",
+                "colorTheme": theme,
+                "locale": "en"
+            });
+            tickerTapeWidgetContainer.appendChild(script);
+        }
+
+        /**
+         * Renders the Sector Widget (Market Quotes).
+         */
+        function renderSectorWidget() {
+            sectorWidgetContainer.innerHTML = '<div class="tradingview-widget-container__widget"></div>'; // Clear and re-add inner div
+            const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+            // Use literal color values based on theme to avoid issues with CSS variables in widget scripts
+            const backgroundColor = theme === 'dark' ? '#131722' : '#f7f7f7';
+
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "width": "100%",
+                "height": "100%",
+                "symbolsGroups": [
+                    {
+                        "name": "BSE Sector Indices",
+                        "originalName": "BSE Sector Indices",
+                        "symbols": [
+                            { "name": "BSE:FOCIT", "displayName": "IT" },
+                            { "name": "BSE:BANK", "displayName": "BANKS" },
+                            { "name": "BSE:FINSER", "displayName": "Financial Services" },
+                            { "name": "BSE:ENERGY", "displayName": "Energy" },
+                            { "name": "BSE:OILGAS", "displayName": "OIL & GAS" },
+                            { "name": "BSE:FMCG", "displayName": "Fast Moving Consumer Goods" },
+                            { "name": "BSE:HC", "displayName": "Healthcare" },
+                            { "name": "BSE:AUTO", "displayName": "AUTO" },
+                            { "name": "BSE:CG", "displayName": "CAPITAL GOODS" },
+                            { "name": "BSE:CD", "displayName": "CONSUMER DURABLES" },
+                            { "name": "BSE:METAL", "displayName": "METAL" },
+                            { "name": "BSE:POWER", "displayName": "POWER" },
+                            { "name": "BSE:INDSTR", "displayName": "Industrials" },
+                            { "name": "BSE:TELCOM", "displayName": "Telecommunication" },
+                            { "name": "BSE:REALTY", "displayName": "REALTY" },
+                            { "name": "BSE:UTILS", "displayName": "Utilities" }
+                        ]
+                    }
+                ],
+                "showSymbolLogo": false,
+                "isTransparent": false,
+                "colorTheme": theme,
+                "locale": "en",
+                "backgroundColor": backgroundColor
+            });
+            sectorWidgetContainer.appendChild(script);
+        }
+
+        /**
+         * Renders the Heatmap widget.
+         */
+        function renderHeatmapWidget() {
+            heatmapWidgetContainer.innerHTML = '<div class="tradingview-widget-container__widget"></div>'; // Clear and re-add inner div
+            const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+            // Use literal color values based on theme to avoid issues with CSS variables in widget scripts
+            const backgroundColor = theme === 'dark' ? '#131722' : '#f7f7f7';
+
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "exchanges": [],
+                "dataSource": "SENSEX",
+                "grouping": "sector",
+                "blockSize": "market_cap_basic",
+                "blockColor": "change",
+                "locale": "en",
+                "symbolUrl": "",
+                "colorTheme": theme,
+                "hasTopBar": true,
+                "isDataSetEnabled": true,
+                "isZoomEnabled": true,
+                "hasSymbolTooltip": true,
+                "isMonoSize": false,
+                "width": "100%",
+                "height": "100%",
+                "backgroundColor": backgroundColor
+            });
+            heatmapWidgetContainer.appendChild(script);
+        }
+
+        /**
+         * Renders all TradingView widgets.
+         */
+        function renderAllTradingViewWidgets() {
+            renderTickerTapeWidget();
+            renderSectorWidget();
+            renderHeatmapWidget();
+        }
+
+        /**
+         * Initializes the random ticker display functionality.
+         */
+        function initRandomTicker() {
+            // Dynamically collect all unique tickers from fnoStocksData
+            const allStocks = [];
+            for (const sector in fnoStocksData) {
+                fnoStocksData[sector].forEach(ticker => {
+                    if (!allStocks.includes(ticker)) {
+                        allStocks.push(ticker);
+                    }
+                });
+            }
+
+            const tickerBox = document.getElementById('randomTicker');
+            let tickerInterval; // Declare tickerInterval here
+
+            function updateTicker() {
+                // Smooth transition effect
+                tickerBox.style.opacity = '0';
+                tickerBox.classList.add('shuffle');
+
+                setTimeout(() => {
+                    const randomStock = allStocks[Math.floor(Math.random() * allStocks.length)];
+                    tickerBox.textContent = randomStock;
+                    tickerBox.dataset.ticker = randomStock;
+                    tickerBox.style.opacity = '1';
+
+                    // Remove animation class after it completes
+                    setTimeout(() => {
+                        tickerBox.classList.remove('shuffle');
+                    }, 500);
+                }, 300);
+            }
+
+            // Initial update
+            updateTicker();
+
+            // Update every 12 seconds
+            tickerInterval = setInterval(updateTicker, 12000); // Corrected line
+
+            // Click to open chart
+            tickerBox.addEventListener('click', function() {
+                const ticker = this.textContent;
+                if (ticker && ticker !== "Loading...") {
+                    // Always open in new tab for direct click on random ticker
+                    window.open(`https://www.tradingview.com/chart/?symbol=NSE:${ticker}`, "_blank");
+                }
+            });
+
+            // Cleanup interval when needed (though not strictly necessary for a single-page app)
+            return () => clearInterval(tickerInterval);
+        }
+
+        /**
+         * Renders the market weightage list.
+         */
+        function renderMarketWeightages() {
+            marketWeightageList.innerHTML = ''; // Clear previous content
+
+            // Convert object to array for sorting
+            let sortedWeightages = Object.entries(marketWeightages).sort(([, weightA], [, weightB]) => {
+                const numA = parseFloat(weightA);
+                const numB = parseFloat(weightB);
+                return numB - numA; // Sort descending by percentage
+            });
+
+            sortedWeightages.forEach(([sector, weight]) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'weightage-item';
+                listItem.innerHTML = `
+                    <span>${sector}</span>
+                    <span class="weightage-percentage">${weight}</span>
+                `;
+                marketWeightageList.appendChild(listItem);
+            });
+        }
+
+
+        // Event listeners
+        backButton.addEventListener('click', renderSectorGrid);
+        themeToggle.addEventListener('click', toggleTheme);
+        scanModeToggle.addEventListener('click', toggleScanMode); // Scan mode toggle button click
+
+        // Scan Mode preference buttons
+        scanModePopupBtn.addEventListener('click', () => {
+            scanModeChartPreference = 'popup';
+            localStorage.setItem('scanModeChartPreference', 'popup');
+            updateScanModePreferenceButtons(); // Update visual state
+            scanModeOptions.classList.remove('visible'); // Hide options after selection
+        });
+        scanModeNewTabBtn.addEventListener('click', () => {
+            scanModeChartPreference = 'newtab';
+            localStorage.setItem('scanModeChartPreference', 'newtab');
+            updateScanModePreferenceButtons(); // Update visual state
+            scanModeOptions.classList.remove('visible'); // Hide options after selection
+        });
+
+        sectorSortSelect.addEventListener('change', renderSectorGrid); // Listen for sort change
+
+        // Keyboard shortcut (Ctrl+Shift+S) for Scan Mode
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                toggleScanMode();
+            } else if (scanModeActive && scanModeOptions.classList.contains('visible')) {
+                // Only allow 1 or 2 if scan mode is active and options are visible
+                if (e.key === '1') {
+                    e.preventDefault();
+                    scanModeChartPreference = 'newtab';
+                    localStorage.setItem('scanModeChartPreference', 'newtab');
+                    updateScanModePreferenceButtons();
+                    scanModeOptions.classList.remove('visible');
+                } else if (e.key === '2') {
+                    e.preventDefault();
+                    scanModeChartPreference = 'popup';
+                    localStorage.setItem('scanModeChartPreference', 'popup');
+                    updateScanModePreferenceButtons();
+                    scanModeOptions.classList.remove('visible');
+                }
+            }
+        });
+
+        // Keyboard shortcut for search focus (Ctrl + /)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && !e.ctrlKey && !e.shiftKey) { // Check for '/' key without Ctrl or Shift
+                e.preventDefault();
+                tickerSearch.focus();
+            }
+        });
+
+        // Search Functionality
+        tickerSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            searchResultsDiv.innerHTML = ''; // Clear previous results
+
+            if (searchTerm.length === 0) {
+                searchResultsDiv.style.display = 'none';
+                return;
+            }
+
+            let matches = [];
+            for (const sector in fnoStocksData) {
+                fnoStocksData[sector].forEach(ticker => {
+                    if (ticker.toLowerCase().includes(searchTerm)) {
+                        matches.push({ ticker: ticker, sector: sector });
+                    }
+                });
+            }
+
+            if (matches.length > 0) {
+                matches.forEach(match => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item'; // Use custom class for styling
+                    resultItem.innerHTML = `<span class="font-semibold">${match.ticker}</span> <span class="text-sm opacity-75">(${match.sector})</span>`;
+                    resultItem.dataset.ticker = match.ticker;
+                    resultItem.dataset.sector = match.sector;
+                    resultItem.addEventListener('click', () => {
+                        showTickersForSector(match.sector);
+                        tickerSearch.value = match.ticker; // Set search bar to selected ticker
+                        searchResultsDiv.style.display = 'none'; // Hide results
+                        // Optional: Scroll to and highlight the ticker
+                        setTimeout(() => {
+                            const targetTickerElement = document.querySelector(`[data-ticker="${match.ticker}"]`);
+                            if (targetTickerElement) {
+                                targetTickerElement.classList.add('highlight'); // Add highlight class
+                                targetTickerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                setTimeout(() => {
+                                    targetTickerElement.classList.remove('highlight');
+                                }, 3000); // Remove highlight after 3 seconds (longer for visibility)
+                            }
+                        }, 100); // Small delay to allow sector rendering
+                    });
+                    searchResultsDiv.appendChild(resultItem);
+                });
+                searchResultsDiv.style.display = 'block';
+            } else {
+                searchResultsDiv.style.display = 'none';
+            }
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!tickerSearch.contains(event.target) && !searchResultsDiv.contains(event.target) && !scanModeOptions.contains(event.target) && event.target !== scanModeToggle) {
+                searchResultsDiv.style.display = 'none';
+                // Also hide scan mode options if clicked outside them and the toggle button
+                if (scanModeOptions.classList.contains('visible')) {
+                    scanModeOptions.classList.remove('visible');
+                }
+            }
+        });
+
+
+        // Initial setup when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(); // Apply theme and render widgets
+            // Initialize Scan Mode from localStorage
+            if (localStorage.getItem('scanModeActive') === 'true') {
+                scanModeActive = true;
+                scanModeToggle.classList.add('active');
+                // Do NOT show options immediately on load if scanModeActive is true,
+                // only show them when the toggle button is clicked.
+                // This prevents the options from flashing on page load.
+            }
+            // Initialize scanModeChartPreference from localStorage
+            scanModeChartPreference = localStorage.getItem('scanModeChartPreference') || 'popup';
+            updateScanModePreferenceButtons(); // Ensure correct initial highlighting of buttons
+
+            renderSectorGrid(); // Then render the grid
+            initQuotes(); // Initialize quotes
+            initDateTime(); // Initialize date/time
+            initRandomTicker(); // Initialize random ticker
+            renderAllTradingViewWidgets(); // Render all TradingView widgets
+            renderMarketWeightages(); // Render market weightages
+        });
+    </script>
+</body>
+</html>
